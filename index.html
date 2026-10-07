@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Александр Баранов · Data Science / ML</title>
+    <meta name="description" content="Студент РТУ МИРЭА. Data Science, ML, LLM. Преподаватель Яндекс Лицея.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="profile">
+    <meta property="og:title" content="Александр Баранов · Data Science / ML">
+    <meta property="og:description" content="Студент и лаборант РТУ МИРЭА. Data Science, ML, LLM. Преподаватель Яндекс Лицея.">
+    <meta property="og:url" content="https://alex-50.github.io/">
+    <meta property="og:locale" content="ru_RU">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/favicon.png">
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#1a1b26">
+
+    <style>
+        /* ============================================================
+           JETBRAINS MONO — ЛОКАЛЬНЫЕ ШРИФТЫ
+           ============================================================ */
+        @font-face {
+            font-family: 'JetBrains Mono';
+            src: url('assets/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'JetBrains Mono';
+            src: url('assets/fonts/JetBrainsMono-Bold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'JetBrains Mono';
+            src: url('assets/fonts/JetBrainsMono-Italic.woff2') format('woff2');
+            font-weight: 400;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'JetBrains Mono';
+            src: url('assets/fonts/JetBrainsMono-BoldItalic.woff2') format('woff2');
+            font-weight: 700;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        /* ============================================================
+           TOKYO NIGHT PALETTE
+           ============================================================ */
+        :root {
+            --bg: #1a1b26;
+            --bg-section: #16161e;
+            --bg-card: #1e1f2e;
+
+            --text: #c0caf5;
+            --text-dim: #7a82b8;
+
+            --green: #9ece6a;
+            --pink: #f7768e;
+            --orange: #ff9e64;
+            --blue: #7aa2f7;
+            --purple: #bb9af7;
+            --yellow: #e0af68;
+
+            --border: #2a2c3d;
+
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+            --max-width: 936px;
+            --text-max-width: 750px;
+            --spacing: 2rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: clamp(15px, 1vw, 19px);
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--purple) var(--bg-section);
+        }
+
+        body {
+            font-family: var(--font-mono);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 1rem;
+            line-height: 1.7;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ============================================================
+           SPLASH
+           ============================================================ */
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+
+        #splash canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+        }
+
+        #splash-text {
+            position: relative;
+            z-index: 1;
+            font-size: 1.1rem;
+            color: var(--green);
+            min-width: 300px;
+        }
+
+        #splash-text .line {
+            margin-bottom: 0.5em;
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        #splash-text .line:nth-child(1) { animation-delay: 0.2s; }
+        #splash-text .line:nth-child(2) { animation-delay: 0.8s; }
+        #splash-text .line:nth-child(3) { animation-delay: 1.4s; }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* ============================================================
+           БОКОВЫЕ СИМВОЛЫ — НЕОН
+           ============================================================ */
+        .side-decor {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 260px;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+            overflow: hidden;
+
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.8s ease, visibility 0s linear 0.8s;
+        }
+
+        .side-decor.visible {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.8s ease, visibility 0s linear 0s;
+        }
+
+        .side-decor.side-left  { left: 0; }
+        .side-decor.side-right { right: 0; }
+
+        .side-decor span {
+            position: absolute;
+            font-family: var(--font-mono);
+            line-height: 1;
+            white-space: nowrap;
+            text-shadow:
+                0 0 4px currentColor,
+                0 0 12px currentColor,
+                0 0 24px currentColor;
+            filter: saturate(1.2);
+            opacity: 0.75;
+            animation: sideFlicker 6s ease-in-out infinite;
+        }
+
+        .side-decor .code {
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            opacity: 0.95;
+            font-size: 0.75rem;
+        }
+
+        .side-decor .math {
+            opacity: 0.7;
+        }
+
+        @keyframes sideFlicker {
+            0%, 100% {
+                opacity: 0.75;
+                text-shadow:
+                    0 0 4px currentColor,
+                    0 0 12px currentColor,
+                    0 0 24px currentColor;
+            }
+            50% {
+                opacity: 0.45;
+                text-shadow:
+                    0 0 3px currentColor,
+                    0 0 8px currentColor,
+                    0 0 16px currentColor;
+            }
+        }
+
+        /* ЛЕВАЯ КОЛОНКА */
+        .side-decor.side-left span:nth-child(1)  { top: 5%;  left: 5%;  font-size: 0.8125rem; animation-delay: 0s;   animation-duration: 7s; }
+        .side-decor.side-left span:nth-child(2)  { top: 14%; left: 35%; font-size: 0.75rem;   animation-delay: 0.6s; animation-duration: 5s; }
+        .side-decor.side-left span:nth-child(3)  { top: 24%; left: 8%;  font-size: 0.8125rem; animation-delay: 1.2s; animation-duration: 9s; }
+        .side-decor.side-left span:nth-child(4)  { top: 34%; left: 40%; font-size: 0.875rem;  animation-delay: 1.8s; animation-duration: 6s; }
+        .side-decor.side-left span:nth-child(5)  { top: 44%; left: 10%; font-size: 0.8125rem; animation-delay: 2.4s; animation-duration: 8s; }
+        .side-decor.side-left span:nth-child(6)  { top: 54%; left: 42%; font-size: 0.75rem;   animation-delay: 3s;   animation-duration: 4.5s; }
+        .side-decor.side-left span:nth-child(7)  { top: 64%; left: 6%;  font-size: 0.75rem;   animation-delay: 3.6s; animation-duration: 6.5s; }
+        .side-decor.side-left span:nth-child(8)  { top: 74%; left: 38%; font-size: 0.8125rem; animation-delay: 4.2s; animation-duration: 5.5s; }
+        .side-decor.side-left span:nth-child(9)  { top: 84%; left: 10%; font-size: 0.875rem;  animation-delay: 4.8s; animation-duration: 7.5s; }
+        .side-decor.side-left span:nth-child(10) { top: 93%; left: 32%; font-size: 0.6875rem; animation-delay: 5.4s; animation-duration: 8.5s; }
+        .side-decor.side-left span:nth-child(11) { top: 19%; left: 22%; font-size: 0.8125rem; animation-delay: 0.9s; animation-duration: 6s; }
+        .side-decor.side-left span:nth-child(12) { top: 39%; left: 24%; font-size: 0.75rem;   animation-delay: 2.1s; animation-duration: 7s; }
+        .side-decor.side-left span:nth-child(13) { top: 59%; left: 18%; font-size: 0.875rem;  animation-delay: 3.3s; animation-duration: 5s; }
+        .side-decor.side-left span:nth-child(14) { top: 79%; left: 28%; font-size: 0.8125rem; animation-delay: 4.5s; animation-duration: 9s; }
+        .side-decor.side-left span:nth-child(15) { top: 89%; left: 45%; font-size: 0.75rem;   animation-delay: 5.7s; animation-duration: 6.5s; }
+
+        /* ПРАВАЯ КОЛОНКА */
+        .side-decor.side-right span:nth-child(1)  { top: 7%;  left: 10%; font-size: 0.8125rem; animation-delay: 0s;   animation-duration: 7s; }
+        .side-decor.side-right span:nth-child(2)  { top: 17%; left: 35%; font-size: 0.75rem;   animation-delay: 0.6s; animation-duration: 5s; }
+        .side-decor.side-right span:nth-child(3)  { top: 27%; left: 8%;  font-size: 0.8125rem; animation-delay: 1.2s; animation-duration: 9s; }
+        .side-decor.side-right span:nth-child(4)  { top: 37%; left: 38%; font-size: 0.875rem;  animation-delay: 1.8s; animation-duration: 6s; }
+        .side-decor.side-right span:nth-child(5)  { top: 47%; left: 12%; font-size: 0.8125rem; animation-delay: 2.4s; animation-duration: 8s; }
+        .side-decor.side-right span:nth-child(6)  { top: 57%; left: 30%; font-size: 0.75rem;   animation-delay: 3s;   animation-duration: 4.5s; }
+        .side-decor.side-right span:nth-child(7)  { top: 67%; left: 6%;  font-size: 0.75rem;   animation-delay: 3.6s; animation-duration: 6.5s; }
+        .side-decor.side-right span:nth-child(8)  { top: 77%; left: 35%; font-size: 0.8125rem; animation-delay: 4.2s; animation-duration: 5.5s; }
+        .side-decor.side-right span:nth-child(9)  { top: 87%; left: 10%; font-size: 0.875rem;  animation-delay: 4.8s; animation-duration: 7.5s; }
+        .side-decor.side-right span:nth-child(10) { top: 95%; left: 32%; font-size: 0.6875rem; animation-delay: 5.4s; animation-duration: 8.5s; }
+        .side-decor.side-right span:nth-child(11) { top: 22%; left: 22%; font-size: 0.8125rem; animation-delay: 0.9s; animation-duration: 6s; }
+        .side-decor.side-right span:nth-child(12) { top: 42%; left: 24%; font-size: 0.75rem;   animation-delay: 2.1s; animation-duration: 7s; }
+        .side-decor.side-right span:nth-child(13) { top: 62%; left: 18%; font-size: 0.875rem;  animation-delay: 3.3s; animation-duration: 5s; }
+        .side-decor.side-right span:nth-child(14) { top: 82%; left: 28%; font-size: 0.8125rem; animation-delay: 4.5s; animation-duration: 9s; }
+        .side-decor.side-right span:nth-child(15) { top: 92%; left: 45%; font-size: 0.75rem;   animation-delay: 5.7s; animation-duration: 6.5s; }
+
+        .side-decor span:nth-child(3n) { transform: rotate(8deg); }
+        .side-decor span:nth-child(4n) { transform: rotate(-6deg); }
+        .side-decor span:nth-child(5n) { transform: rotate(4deg); }
+
+        @media (max-width: 1700px) {
+            .side-decor { display: none; }
+        }
+
+        /* ============================================================
+           ЦЕНТРИРОВАННЫЙ КОНТЕЙНЕР
+           ============================================================ */
+        main {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        main.visible { opacity: 1; }
+
+        /* ============================================================
+           HERO
+           ============================================================ */
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem 0 1rem 0;
+        }
+
+        .hero .avatar-wrap {
+            position: relative;
+            width: 780px;
+            height: 780px;
+            margin: 0 auto 3rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            padding: 90px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            box-shadow:
+                inset 0 0 120px rgba(0, 0, 0, 0.3),
+                0 0 180px rgba(158, 206, 106, 0.08);
+        }
+
+        .hero .avatar {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center;
+            border: 3px solid var(--border);
+            display: block;
+            z-index: 2;
+            transition: border-color 0.3s ease;
+            pointer-events: none;
+        }
+
+        .hero .avatar-wrap:hover .avatar {
+            border-color: var(--green);
+        }
+
+        .hero .pcb {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero .pcb .trace {
+            stroke: var(--border);
+            stroke-width: 1.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .hero .pcb .pad {
+            fill: var(--bg-section);
+            stroke: var(--border);
+            stroke-width: 1.5;
+            transition: all 0.4s ease;
+            animation: padPulse 4s ease-in-out infinite;
+        }
+
+        .hero .pcb .pad:nth-of-type(1) { animation-delay: 0s;   }
+        .hero .pcb .pad:nth-of-type(2) { animation-delay: 0.5s; }
+        .hero .pcb .pad:nth-of-type(3) { animation-delay: 1s;   }
+        .hero .pcb .pad:nth-of-type(4) { animation-delay: 1.5s; }
+        .hero .pcb .pad:nth-of-type(5) { animation-delay: 2s;   }
+        .hero .pcb .pad:nth-of-type(6) { animation-delay: 2.5s; }
+        .hero .pcb .pad:nth-of-type(7) { animation-delay: 3s;   }
+        .hero .pcb .pad:nth-of-type(8) { animation-delay: 3.5s; }
+
+        @keyframes padPulse {
+            0%, 100% {
+                stroke: var(--border);
+                filter: none;
+            }
+            50% {
+                stroke: var(--green);
+                filter: drop-shadow(0 0 4px rgba(158, 206, 106, 0.6));
+            }
+        }
+
+        .hero .pcb .via {
+            fill: var(--border);
+            transition: all 0.4s ease;
+        }
+
+        .hero .pcb .signal {
+            opacity: 0;
+            animation: signalPulse 3s linear infinite;
+        }
+
+        .hero .pcb .signal-1 { animation-delay: 0s;    fill: var(--green);  }
+        .hero .pcb .signal-2 { animation-delay: 0.5s;  fill: var(--blue);   }
+        .hero .pcb .signal-3 { animation-delay: 1s;    fill: var(--pink);   }
+        .hero .pcb .signal-4 { animation-delay: 1.5s;  fill: var(--orange); }
+        .hero .pcb .signal-5 { animation-delay: 2s;    fill: var(--purple); }
+        .hero .pcb .signal-6 { animation-delay: 2.5s;  fill: var(--yellow); }
+
+        @keyframes signalPulse {
+            0%   { opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 .first { color: var(--yellow); }
+        .hero h1 .last  { color: var(--orange); }
+
+        .hero .tagline {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            color: var(--blue);
+            margin-bottom: 1.5rem;
+            min-height: 1.5em;
+        }
+
+        .hero .tagline::before {
+            content: '// ';
+            color: var(--text-dim);
+        }
+
+        .hero .cursor {
+            display: inline-block;
+            color: var(--green);
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .hero .description {
+            font-size: 1rem;
+            color: var(--text);
+            max-width: var(--text-max-width);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero .quick-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero .quick-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9375rem;
+            transition: color 0.2s ease;
+        }
+
+        .hero .quick-links a:hover { color: var(--green); }
+
+        .hero .quick-links a::before {
+            content: '→ ';
+            color: var(--text-dim);
+        }
+
+        /* ============================================================
+           СЕКЦИИ
+           ============================================================ */
+        section {
+            padding: var(--spacing) 0;
+            border-top: 1px solid var(--border);
+        }
+
+        section h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        section h2::before {
+            content: '// ';
+            color: var(--text-dim);
+        }
+
+        #about h2      { color: var(--green); }
+        #education h2  { color: var(--yellow); }
+        #skills h2     { color: var(--orange); }
+        #projects h2   { color: var(--blue); }
+        #contacts h2   { color: var(--purple); }
+
+        section p {
+            margin-bottom: 1rem;
+            max-width: var(--text-max-width);
+        }
+
+        section p.dim { color: var(--text-dim); }
+
+        /* ============================================================
+           ОБРАЗОВАНИЕ
+           ============================================================ */
+        .edu-block { margin-bottom: 1.5rem; }
+        .edu-block:last-child { margin-bottom: 0; }
+
+        .edu-block-title {
+            font-size: 0.8125rem;
+            color: var(--text-dim);
+            font-weight: 400;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.02em;
+        }
+
+        .education-item {
+            margin-bottom: 0.75rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--yellow);
+            max-width: var(--text-max-width);
+        }
+
+        .education-item:last-child { margin-bottom: 0; }
+
+        .education-item h4 {
+            color: var(--orange);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .education-item .meta {
+            color: var(--text-dim);
+            font-size: 0.875rem;
+        }
+
+        /* ============================================================
+           НАВЫКИ
+           ============================================================ */
+        .skills-group { margin-bottom: 1.25rem; }
+        .skills-group:last-child { margin-bottom: 0; }
+
+        .skills-group h3 {
+            font-size: 0.8125rem;
+            color: var(--text-dim);
+            font-weight: 400;
+            margin-bottom: 0.75rem;
+        }
+
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .skill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+            color: var(--text);
+            transition: all 0.2s ease;
+        }
+
+        .skill:hover {
+            border-color: var(--green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(158, 206, 106, 0.15);
+        }
+
+        .skill img {
+            width: 1.75rem;
+            height: 1.75rem;
+            padding: 3px;
+            background: #f5f5f7;
+            border-radius: 6px;
+            box-sizing: content-box;
+            transition: filter 0.2s ease, background 0.2s ease;
+        }
+
+        /* ============================================================
+           ПРОЕКТЫ
+           ============================================================ */
+        .project {
+            display: block;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 1.25rem;
+            transition: all 0.2s ease;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .project:last-child { margin-bottom: 0; }
+
+        .project:hover {
+            border-color: var(--blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(122, 162, 247, 0.12);
+        }
+
+        .project-preview {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg);
+        }
+
+        .project-body { padding: 1.25rem; }
+
+        .project-header {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .project h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--blue);
+        }
+
+        .project .badge {
+            font-size: 0.6875rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            background: var(--bg);
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+        }
+
+        .project .desc {
+            color: var(--text);
+            margin-bottom: 0.75rem;
+            font-size: 0.9375rem;
+            max-width: var(--text-max-width);
+        }
+
+        .project .tech {
+            color: var(--text-dim);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .project .tech::before {
+            content: '> ';
+            color: var(--text-dim);
+        }
+
+        .project .open {
+            color: var(--green);
+            font-size: 0.875rem;
+            border-bottom: 1px dashed transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .project:hover .open { border-bottom-color: var(--green); }
+
+        /* ============================================================
+           КОНТАКТЫ
+           ============================================================ */
+        .contacts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 0.5rem;
+        }
+
+        .contacts a {
+            color: var(--purple);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.2s ease;
+        }
+
+        .contacts a:hover { color: var(--text); }
+
+        .contacts a::before {
+            content: '→ ';
+            color: var(--text-dim);
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        footer {
+            padding: 1.5rem 0;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ============================================================
+           АДАПТИВ
+           ============================================================ */
+        @media (max-width: 1000px) {
+            :root { --max-width: 100%; }
+        }
+
+        @media (max-width: 1100px) {
+            .hero .avatar-wrap {
+                width: 600px;
+                height: 600px;
+                padding: 70px;
+            }
+
+            .hero .avatar {
+                width: 460px;
+                height: 460px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .hero .avatar-wrap {
+                width: 420px;
+                height: 420px;
+                padding: 50px;
+            }
+
+            .hero .avatar {
+                width: 320px;
+                height: 320px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            :root { --spacing: 1.5rem; }
+
+            .hero {
+                min-height: 55vh;
+                padding: 1.5rem 0 0.5rem 0;
+            }
+
+            .hero .avatar-wrap {
+                width: 300px;
+                height: 300px;
+                padding: 36px;
+                margin-bottom: 2rem;
+            }
+
+            .hero .avatar {
+                width: 228px;
+                height: 228px;
+            }
+
+            .hero h1 { font-size: 2rem; }
+
+            .contacts { gap: 1rem; }
+        }
+
+        /* ============================================================
+           КАСТОМНЫЙ СКРОЛЛБАР — ОКРУГЛЫЙ, ФИОЛЕТОВО-СИНИЙ
+           ============================================================ */
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            width: 14px;
+            height: 14px;
+        }
+
+        html::-webkit-scrollbar-track,
+        body::-webkit-scrollbar-track {
+            background: var(--bg-section);
+            border-radius: 999px;
+        }
+
+        html::-webkit-scrollbar-thumb,
+        body::-webkit-scrollbar-thumb {
+            border-radius: 999px;
+            background: linear-gradient(180deg, var(--purple) 0%, var(--blue) 100%);
+        }
+
+        html::-webkit-scrollbar-thumb:hover,
+        body::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #c9aaff 0%, #8fb4ff 100%);
+            box-shadow:
+                0 0 6px  rgba(187, 154, 247, 0.6),
+                0 0 14px rgba(122, 162, 247, 0.5);
+        }
+
+        html::-webkit-scrollbar-thumb:active,
+        body::-webkit-scrollbar-thumb:active {
+            background: linear-gradient(180deg, var(--pink) 0%, var(--purple) 100%);
+        }
+
+        html::-webkit-scrollbar-corner,
+        body::-webkit-scrollbar-corner {
+            background: var(--bg-section);
+        }
+
+        /* ============================================================
+           ЗАЩИТА КАРТИНОК (без drag / выделения / контекстного меню)
+           pointer-events НЕ трогаем глобально — иначе умирают hover и клики
+           ============================================================ */
+        img {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
+
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+
+            -webkit-touch-callout: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+    <canvas id="matrix-canvas"></canvas>
+    <div id="splash-text">
+        <div class="line">&gt; initializing profile...</div>
+        <div class="line">&gt; loading experience...</div>
+        <div class="line">&gt; welcome, alex-50</div>
+    </div>
+</div>
+
+<!-- БОКОВЫЕ СИМВОЛЫ (слева) -->
+<div class="side-decor side-left" aria-hidden="true">
+    <span class="code" style="color: var(--green);">if __name__ == "__main__":</span>
+    <span class="code" style="color: var(--blue);">pip install torch</span>
+    <span class="code" style="color: var(--pink);">class Model(nn.Module):</span>
+    <span class="code" style="color: var(--purple);">git commit -m "feat"</span>
+    <span class="code" style="color: var(--orange);">with torch.no_grad():</span>
+    <span class="code" style="color: var(--yellow);">uvicorn main:app</span>
+    <span class="code" style="color: var(--green);">loss.backward()</span>
+    <span class="code" style="color: var(--blue);">docker build -t app .</span>
+    <span class="code" style="color: var(--pink);">optimizer.step()</span>
+    <span class="code" style="color: var(--purple);">git push origin main</span>
+    <span class="code" style="color: var(--orange);">@dataclass</span>
+    <span class="code" style="color: var(--yellow);">pip install fastapi</span>
+    <span class="code" style="color: var(--green);">for i in range(n):</span>
+    <span class="code" style="color: var(--blue);">python -m venv .venv</span>
+    <span class="code" style="color: var(--pink);">raise ValueError()</span>
+</div>
+
+<!-- БОКОВЫЕ СИМВОЛЫ (справа) -->
+<div class="side-decor side-right" aria-hidden="true">
+    <span class="code" style="color: var(--pink);">pip install numpy</span>
+    <span class="code" style="color: var(--purple);">async def main():</span>
+    <span class="code" style="color: var(--green);">git checkout -b dev</span>
+    <span class="code" style="color: var(--blue);">model.train()</span>
+    <span class="code" style="color: var(--orange);">docker compose up -d</span>
+    <span class="code" style="color: var(--yellow);">return await fetch()</span>
+    <span class="code" style="color: var(--green);">git rebase -i HEAD~3</span>
+    <span class="code" style="color: var(--pink);">with open("f.txt") as f:</span>
+    <span class="code" style="color: var(--purple);">pip install polars</span>
+    <span class="code" style="color: var(--blue);">yield from gen()</span>
+    <span class="code" style="color: var(--orange);">git stash pop</span>
+    <span class="code" style="color: var(--yellow);">lambda x: x ** 2</span>
+    <span class="code" style="color: var(--green);">docker ps -a</span>
+    <span class="code" style="color: var(--pink);">model.eval()</span>
+    <span class="code" style="color: var(--purple);">git log --oneline</span>
+</div>
+
+<!-- MAIN -->
+<main id="content">
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="avatar-wrap">
+            <svg class="pcb" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path class="trace" d="M 40 60 L 40 100 L 70 130" />
+                <path class="trace" d="M 40 200 L 40 160 L 70 130" />
+                <path class="trace" d="M 220 60 L 220 100 L 190 130" />
+                <path class="trace" d="M 220 200 L 220 160 L 190 130" />
+                <path class="trace" d="M 130 30 L 100 30 L 70 60" />
+                <path class="trace" d="M 130 230 L 100 230 L 70 200" />
+                <path class="trace" d="M 130 30 L 160 30 L 190 60" />
+                <path class="trace" d="M 130 230 L 160 230 L 190 200" />
+                <path class="trace" d="M 40 60 L 70 30 L 100 30" />
+                <path class="trace" d="M 40 200 L 70 230 L 100 230" />
+                <path class="trace" d="M 220 60 L 190 30 L 160 30" />
+                <path class="trace" d="M 220 200 L 190 230 L 160 230" />
+
+                <circle class="pad" cx="40"  cy="60"  r="5" />
+                <circle class="pad" cx="40"  cy="200" r="5" />
+                <circle class="pad" cx="220" cy="60"  r="5" />
+                <circle class="pad" cx="220" cy="200" r="5" />
+                <circle class="pad" cx="130" cy="30"  r="5" />
+                <circle class="pad" cx="130" cy="230" r="5" />
+                <circle class="pad" cx="70"  cy="130" r="4" />
+                <circle class="pad" cx="190" cy="130" r="4" />
+
+                <circle class="via" cx="70"  cy="30"  r="2.5" />
+                <circle class="via" cx="100" cy="30"  r="2.5" />
+                <circle class="via" cx="160" cy="30"  r="2.5" />
+                <circle class="via" cx="190" cy="30"  r="2.5" />
+                <circle class="via" cx="70"  cy="230" r="2.5" />
+                <circle class="via" cx="100" cy="230" r="2.5" />
+                <circle class="via" cx="160" cy="230" r="2.5" />
+                <circle class="via" cx="190" cy="230" r="2.5" />
+
+                <circle class="signal signal-1" r="3">
+                    <animateMotion dur="3s" repeatCount="indefinite"
+                        path="M 40 60 L 40 100 L 70 130" />
+                </circle>
+                <circle class="signal signal-2" r="3">
+                    <animateMotion dur="3s" repeatCount="indefinite"
+                        path="M 220 60 L 220 100 L 190 130" />
+                </circle>
+                <circle class="signal signal-3" r="3">
+                    <animateMotion dur="3s" repeatCount="indefinite"
+                        path="M 130 30 L 100 30 L 70 60" />
+                </circle>
+                <circle class="signal signal-4" r="3">
+                    <animateMotion dur="3s" repeatCount="indefinite"
+                        path="M 130 230 L 100 230 L 70 200" />
+                </circle>
+                <circle class="signal signal-5" r="3">
+                    <animateMotion dur="3s" repeatCount="indefinite"
+                        path="M 130 30 L 160 30 L 190 60" />
+                </circle>
+                <circle class="signal signal-6" r="3">
+                    <animateMotion dur="3s" repeatCount="indefinite"
+                        path="M 220 200 L 190 230 L 160 230" />
+                </circle>
+            </svg>
+
+            <img src="assets/avatar.jpg" alt="Александр Баранов" class="avatar"
+                 width="600" height="600" loading="eager" decoding="async"
+                 draggable="false">
+        </div>
+
+        <h1><span class="first">Александр</span> <span class="last">Баранов</span></h1>
+        <p class="tagline"><span id="typewriter" data-text="Data Science · ML · LLM · Automation"></span><span class="cursor">_</span></p>
+        <p class="description">
+            Студент, преподаватель, методист, разработчик.
+        </p>
+        <div class="quick-links">
+            <a href="https://github.com/alex-50" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://t.me/alks50" target="_blank" rel="noopener noreferrer">Telegram</a>
+            <a href="#about">О себе</a>
+            <a href="#projects">Проекты</a>
+        </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+        <h2>О себе</h2>
+
+        <p>
+            Студент РТУ МИРЭА по направлению
+            <span style="color: var(--orange)">«Информатика и вычислительная техника»</span>.
+            Параллельно работаю в нескольких ролях:
+            <strong>преподаватель</strong> в Яндекс Лицее,
+            <strong>лаборант</strong> в университете
+            и <strong>разработчик</strong> инструментов для анализа данных
+            и автоматизации.
+        </p>
+
+        <p>
+            За время учёбы освоил широкий спектр дисциплин — от
+            <strong>высшей математики</strong>,
+            <strong>теории вероятностей</strong> и
+            <strong>математической статистики</strong> до
+            <strong>теории автоматов</strong>,
+            <strong>архитектуры вычислительных устройств</strong>,
+            <strong>ведения проектов</strong> и
+            <strong>моделирования бизнес-процессов</strong>.
+            Это даёт мне базу для решения задач
+            <span style="color: var(--blue)">на стыке разных областей</span>.
+        </p>
+
+        <p>
+            Мне интересно разбираться, как устроены сложные процессы —
+            от <span style="color: var(--pink)">бизнес-логики</span>
+            до того, как <span style="color: var(--green)">данные</span>
+            превращаются в <span style="color: var(--green)">полезный результат</span>.
+            Постоянно ищу точки, где можно сделать чуть лучше и понятнее —
+            будь то структура проекта, подготовка данных или объяснение
+            сложной темы простыми словами.
+        </p>
+
+        <p>
+            Участвую в соревнованиях, конференциях и хакатонах —
+            это честный способ проверить себя и научиться работать
+            в условиях ограничений. Был финалистом
+            <strong>RuCode</strong> (МФТИ)
+            и <strong>Баттла ВУЗов</strong> (Яндекс),
+            honors на <strong>ICPC</strong>
+            и победителем
+            <strong>TrueTech Sprint</strong> (МТС)
+            по промпт-инжинирингу.
+        </p>
+
+        <p class="dim">
+            Хочу развиваться в <strong>AI-инженерии</strong> — для меня
+            это не про «волшебную модель», а про
+            <strong>продуманный процесс</strong>, где каждый шаг обоснован.
+        </p>
+    </section>
+
+    <!-- EDUCATION -->
+    <section id="education">
+        <h2>Образование</h2>
+
+        <div class="edu-block">
+            <h3 class="edu-block-title">// Бакалавриат</h3>
+
+            <div class="education-item">
+                <h4>РТУ МИРЭА</h4>
+                <p class="meta">Информатика и вычислительная техника</p>
+                <p class="meta">2023—2027 · бакалавриат (ожидается)</p>
+            </div>
+        </div>
+
+        <div class="edu-block">
+            <h3 class="edu-block-title">// Повышение квалификации</h3>
+
+            <div class="education-item">
+                <h4>ГК Astra</h4>
+                <p class="meta">Администрирование ОС Linux</p>
+                <p class="meta">2024/2025 · 256 часов</p>
+            </div>
+
+            <div class="education-item">
+                <h4>АНО ДПО «Образовательные технологии Яндекса»</h4>
+                <p class="meta">Решение прикладных задач на Python</p>
+                <p class="meta">2024/2025 · 72 часа</p>
+            </div>
+
+            <div class="education-item">
+                <h4>Лаборатория доверенного ИИ, РТУ МИРЭА</h4>
+                <p class="meta">Инженерия искусственного интеллекта</p>
+                <p class="meta">2025/2026 · 256 часов</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+        <h2>Навыки</h2>
+
+        <div class="skills-group">
+            <h3>// ИИ и Агенты</h3>
+            <div class="skills-grid">
+                <span class="skill"><img src="assets/icons/ollama.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Ollama</span>
+                <span class="skill"><img src="assets/icons/langchain.svg" alt="" width="28" height="28" loading="lazy" draggable="false">LangChain</span>
+                <span class="skill"><img src="assets/icons/langgraph.svg" alt="" width="28" height="28" loading="lazy" draggable="false">LangGraph</span>
+                <span class="skill"><img src="assets/icons/huggingface.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Hugging Face</span>
+            </div>
+        </div>
+
+        <div class="skills-group">
+            <h3>// Дата</h3>
+            <div class="skills-grid">
+                <span class="skill"><img src="assets/icons/numpy.svg" alt="" width="28" height="28" loading="lazy" draggable="false">NumPy</span>
+                <span class="skill"><img src="assets/icons/pandas.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Pandas</span>
+                <span class="skill"><img src="assets/icons/polars.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Polars</span>
+                <span class="skill"><img src="assets/icons/scikitlearn.svg" alt="" width="28" height="28" loading="lazy" draggable="false">scikit-learn</span>
+                <span class="skill"><img src="assets/icons/pytorch.svg" alt="" width="28" height="28" loading="lazy" draggable="false">PyTorch</span>
+                <span class="skill"><img src="assets/icons/scipy.svg" alt="" width="28" height="28" loading="lazy" draggable="false">SciPy</span>
+                <span class="skill"><img src="assets/icons/sympy.svg" alt="" width="28" height="28" loading="lazy" draggable="false">SymPy</span>
+                <span class="skill"><img src="assets/icons/plotly.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Plotly</span>
+                <span class="skill"><img src="assets/icons/streamlit.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Streamlit</span>
+            </div>
+        </div>
+
+        <div class="skills-group">
+            <h3>// Веб</h3>
+            <div class="skills-grid">
+                <span class="skill"><img src="assets/icons/flask.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Flask</span>
+                <span class="skill"><img src="assets/icons/fastapi.svg" alt="" width="28" height="28" loading="lazy" draggable="false">FastAPI</span>
+                <span class="skill"><img src="assets/icons/pydantic.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Pydantic</span>
+                <span class="skill"><img src="assets/icons/sqlalchemy.svg" alt="" width="28" height="28" loading="lazy" draggable="false">SQLAlchemy</span>
+            </div>
+        </div>
+
+        <div class="skills-group">
+            <h3>// Инфра</h3>
+            <div class="skills-grid">
+                <span class="skill"><img src="assets/icons/gnubash.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Bash</span>
+                <span class="skill"><img src="assets/icons/docker.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Docker</span>
+                <span class="skill"><img src="assets/icons/postgresql.svg" alt="" width="28" height="28" loading="lazy" draggable="false">PostgreSQL</span>
+                <span class="skill"><img src="assets/icons/redis.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Redis</span>
+                <span class="skill"><img src="assets/icons/ubuntu.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Ubuntu</span>
+                <span class="skill"><img src="assets/icons/yandexcloud.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Yandex Cloud</span>
+            </div>
+        </div>
+
+        <div class="skills-group">
+            <h3>// Тулзы</h3>
+            <div class="skills-grid">
+                <span class="skill"><img src="assets/icons/jupyter.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Jupyter</span>
+                <span class="skill"><img src="assets/icons/git.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Git</span>
+                <span class="skill"><img src="assets/icons/uv.svg" alt="" width="28" height="28" loading="lazy" draggable="false">uv</span>
+                <span class="skill"><img src="assets/icons/postman.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Postman</span>
+                <span class="skill"><img src="assets/icons/pycharm.svg" alt="" width="28" height="28" loading="lazy" draggable="false">PyCharm</span>
+                <span class="skill"><img src="assets/icons/obsidian.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Obsidian</span>
+                <span class="skill"><img src="assets/icons/latex.svg" alt="" width="28" height="28" loading="lazy" draggable="false">LaTeX</span>
+                <span class="skill"><img src="assets/icons/markdown.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Markdown</span>
+                <span class="skill"><img src="assets/icons/mermaid.svg" alt="" width="28" height="28" loading="lazy" draggable="false">Mermaid</span>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+        <h2>Проекты</h2>
+
+        <a href="https://github.com/alex-50/AIE-MIREA" class="project" target="_blank" rel="noopener noreferrer">
+            <img src="https://raw.githubusercontent.com/alex-50/AIE-MIREA/main/project/artifacts/baselines/LinearSVC%20Tuned_confusion_matrix.png"
+                 alt="AIE-MIREA preview"
+                 class="project-preview"
+                 width="1200" height="630" loading="lazy" decoding="async"
+                 draggable="false">
+            <div class="project-body">
+                <div class="project-header">
+                    <h3>AIE-MIREA</h3>
+                    <span class="badge">NLP</span>
+                </div>
+                <p class="desc">
+                    Проект в рамках курса «Инженерия искусственного интеллекта»:
+                    классификация новостных статей с помощью дообученной
+                    BERT и TF-IDF + LinearSVC для фолбека.
+                </p>
+                <p class="tech">Python · PyTorch · transformers · scikit-learn · pandas · pymorphy3 · seaborn</p>
+                <p class="open">Открыть на GitHub →</p>
+            </div>
+        </a>
+
+        <a href="https://github.com/alex-50/insight-forms" class="project" target="_blank" rel="noopener noreferrer">
+            <img src="https://raw.githubusercontent.com/alex-50/insight-forms/master/docs/corr.gif"
+                 alt="insight-forms preview"
+                 class="project-preview"
+                 width="1200" height="630" loading="lazy" decoding="async"
+                 draggable="false">
+            <div class="project-body">
+                <div class="project-header">
+                    <h3>insight-forms</h3>
+                    <span class="badge">EDA</span>
+                </div>
+                <p class="desc">
+                    EDA-инструмент на Streamlit: описательные статистики,
+                    визуализации, корреляции, KMeans-кластеризация,
+                    t-test / χ² / ANOVA, SQL-запросы.
+                </p>
+                <p class="tech">Python · Streamlit · pandas · plotly · scikit-learn · statsmodels</p>
+                <p class="open">Открыть на GitHub →</p>
+            </div>
+        </a>
+
+        <a href="https://github.com/alex-50/vk-links" class="project" target="_blank" rel="noopener noreferrer">
+            <img src="https://raw.githubusercontent.com/alex-50/vk-links/master/screenshots/degree_gradient.png"
+                 alt="vk-links preview"
+                 class="project-preview"
+                 width="1200" height="630" loading="lazy" decoding="async"
+                 draggable="false">
+            <div class="project-body">
+                <div class="project-header">
+                    <h3>vk-links</h3>
+                    <span class="badge">OSINT</span>
+                </div>
+                <p class="desc">
+                    OSINT-инструмент для сбора дружеских связей ВКонтакте
+                    и визуализации графа в Gephi. CLI на typer, экспорт в GEXF.
+                </p>
+                <p class="tech">Python · VK API · networkx · typer</p>
+                <p class="open">Открыть на GitHub →</p>
+            </div>
+        </a>
+
+        <a href="https://github.com/alex-50/snake" class="project" target="_blank" rel="noopener noreferrer">
+            <img src="https://raw.githubusercontent.com/alex-50/snake/master/demo/CLASSIC_LIGHTTHEME.gif"
+                 alt="snake preview"
+                 class="project-preview"
+                 width="1200" height="630" loading="lazy" decoding="async"
+                 draggable="false">
+            <div class="project-body">
+                <div class="project-header">
+                    <h3>snake</h3>
+                    <span class="badge">Game</span>
+                </div>
+                <p class="desc">
+                    Классическая змейка на pygame: два режима (классический
+                    и гонка с ИИ), тёмная/светлая темы, система рекордов.
+                </p>
+                <p class="tech">Python · pygame</p>
+                <p class="open">Открыть на GitHub →</p>
+            </div>
+        </a>
+
+    </section>
+
+    <!-- CONTACTS -->
+    <section id="contacts">
+        <h2>Контакты</h2>
+        <div class="contacts">
+            <a href="https://github.com/alex-50" target="_blank" rel="noopener noreferrer">github.com/alex-50</a>
+            <a href="https://t.me/alks50" target="_blank" rel="noopener noreferrer">@alks50</a>
+        </div>
+    </section>
+
+    <footer>
+        © 2026 Александр Баранов · Built with GitHub Pages · JetBrains Mono
+    </footer>
+
+</main>
+
+<!-- SCRIPTS -->
+<script>
+    /* ============================================================
+       SPLASH (матрица)
+       ============================================================ */
+    (function () {
+        const splash = document.getElementById('splash');
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        const content = document.getElementById('content');
+
+        const width = canvas.width = window.innerWidth;
+        const height = canvas.height = window.innerHeight;
+        const fontSize = 16;
+        const columns = Math.floor(width / fontSize);
+        const chars = 'アァカサタナハマヤャラワガザダバパ0123456789';
+
+        const drops = Array(columns).fill(0).map(() => ({
+            y: Math.random() * -height,
+            speed: 6 + Math.random() * 10
+        }));
+
+        const startTime = Date.now();
+        const splashDuration = 2200;
+
+        function draw() {
+            const elapsed = Date.now() - startTime;
+            ctx.fillStyle = 'rgba(26, 27, 38, 0.15)';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#9ece6a';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const drop = drops[i];
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(char, i * fontSize, drop.y);
+                drop.y += drop.speed;
+            }
+
+            if (elapsed > splashDuration) {
+                const fadeProgress = Math.min((elapsed - splashDuration) / 500, 1);
+                splash.style.opacity = 1 - fadeProgress;
+                if (fadeProgress >= 1) {
+                    splash.remove();
+                    content.classList.add('visible');
+                    return;
+                }
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        requestAnimationFrame(draw);
+    })();
+
+    /* ============================================================
+       ЭФФЕКТ ПЕЧАТНОЙ МАШИНКИ + ПОКАЗ SIDE-СИМВОЛОВ
+       ============================================================ */
+    (function () {
+        const target = document.getElementById('typewriter');
+        if (!target) return;
+
+        const text = target.getAttribute('data-text') || '';
+        let index = 0;
+
+        const speed = 70;
+        const startDelay = 2400;
+
+        function type() {
+            if (index < text.length) {
+                target.textContent += text.charAt(index);
+                index++;
+                setTimeout(type, speed);
+            }
+        }
+
+        setTimeout(() => {
+            document.querySelectorAll('.side-decor').forEach(el => {
+                el.classList.add('visible');
+            });
+            type();
+        }, startDelay);
+    })();
+
+    /* ============================================================
+       ЗАЩИТА КАРТИНОК: без drag / без выделения / без контекстного меню
+       ============================================================ */
+    document.querySelectorAll('img').forEach(img => {
+        img.setAttribute('draggable', 'false');
+        img.addEventListener('dragstart', e => e.preventDefault());
+        img.addEventListener('contextmenu', e => e.preventDefault());
+        img.addEventListener('selectstart', e => e.preventDefault());
+    });
+
+    document.addEventListener('dragstart', e => {
+        if (e.target.tagName === 'IMG') e.preventDefault();
+    });
+</script>
+
+</body>
+</html>
