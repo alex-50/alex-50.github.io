@@ -146,8 +146,17 @@
         }
 
         #splash-text .line:nth-child(1) { animation-delay: 0.2s; }
-        #splash-text .line:nth-child(2) { animation-delay: 0.8s; }
-        #splash-text .line:nth-child(3) { animation-delay: 1.4s; }
+        #splash-text .line:nth-child(2) { animation-delay: 0.6s; }
+        #splash-text .line:nth-child(3) { animation-delay: 1.0s; }
+        #splash-text .line:nth-child(4) { animation-delay: 1.4s; }
+        #splash-text .line:nth-child(5) { animation-delay: 1.8s; }
+
+        /* Фиксированная ширина префикса: `>`, `>>`, `>>>` дают одинаковый отступ */
+        #splash-text .prompt {
+            display: inline-block;
+            width: 4ch;
+            color: var(--text-dim);
+        }
 
         @keyframes fadeIn { to { opacity: 1; } }
 
@@ -811,9 +820,11 @@
 <div id="splash">
     <canvas id="matrix-canvas"></canvas>
     <div id="splash-text">
-        <div class="line">&gt; initializing profile...</div>
-        <div class="line">&gt; loading experience...</div>
-        <div class="line">&gt; welcome, alex-50</div>
+        <div class="line"><span class="prompt">&gt;</span>initializing portfolio...</div>
+        <div class="line"><span class="prompt">&gt;</span>mounting /experience /projects /skills</div>
+        <div class="line"><span class="prompt">&gt;&gt;</span>verifying credentials... ok</div>
+        <div class="line"><span class="prompt">&gt;&gt;</span>connection established</div>
+        <div class="line"><span class="prompt">&gt;&gt;&gt;</span>welcome, visitor</div>
     </div>
 </div>
 
@@ -1244,8 +1255,8 @@
                 const fadeProgress = Math.min((elapsed - splashDuration) / 500, 1);
                 splash.style.opacity = 1 - fadeProgress;
                 if (fadeProgress >= 1) {
-                    splash.remove();
                     content.classList.add('visible');
+                    splash.remove();
                     return;
                 }
             }
@@ -1267,7 +1278,7 @@
         let index = 0;
 
         const speed = 70;
-        const startDelay = 2400;
+        const startDelay = 2800;
 
         function type() {
             if (index < text.length) {
